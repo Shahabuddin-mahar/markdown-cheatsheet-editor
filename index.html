@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MarkDraft - Minimal Markdown Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans min-h-screen flex flex-col">
+  <header class="border-b border-gray-800 bg-gray-900/60 p-4 flex items-center justify-between">
+    <div class="flex items-center gap-2 font-bold text-sm">
+      <i class="fa-brands fa-markdown text-indigo-400 text-lg"></i>
+      <span>MarkDraft Live Editor</span>
+    </div>
+    <div class="flex items-center gap-3 text-xs">
+      <span id="word-stat" class="text-gray-400">Words: 0</span>
+      <button onclick="downloadMd()" class="bg-indigo-600 hover:bg-indigo-500 font-semibold px-3 py-1.5 rounded-lg text-white">Export .MD</button>
+    </div>
+  </header>
+
+  <main class="flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-800">
+    <textarea id="editor" class="w-full h-full bg-gray-950 p-6 text-sm font-mono text-gray-200 focus:outline-none resize-none" placeholder="Type Markdown here..."># Welcome to MarkDraft
+
+A distraction-free **Markdown Editor** with instant live preview.
+
+### Features
+- Real-time syntax rendering
+- Word and character statistics
+- 1-click Markdown export
+
+> "Simplicity is the soul of efficiency."
+</textarea>
+    <div id="preview" class="p-6 prose prose-invert max-w-none overflow-y-auto text-sm leading-relaxed"></div>
+  </main>
+
+  <script>
+    const ed = document.getElementById("editor");
+    const prev = document.getElementById("preview");
+    const stat = document.getElementById("word-stat");
+
+    function update() {
+      prev.innerHTML = marked.parse(ed.value);
+      const words = ed.value.trim().split(/\s+/).filter(Boolean).length;
+      stat.innerText = `Words: ${words}`;
+    }
+
+    function downloadMd() {
+      const blob = new Blob([ed.value], {type: "text/markdown"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "document.md";
+      a.click();
+    }
+
+    ed.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>
